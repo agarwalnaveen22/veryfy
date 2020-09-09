@@ -4,6 +4,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
 import Header from '../Components/Header';
 import Button from '../Components/Button';
+import {Actions} from 'react-native-router-flux';
 
 class Login extends Component {
   constructor(props) {
@@ -13,6 +14,13 @@ class Login extends Component {
       phoneNumber: '',
     };
   }
+  checkVerification = () => {
+    if (this.state.phoneNumber === '') {
+      this.setState({isPhoneNumber: true});
+    } else {
+      Actions.replace('otp-verify');
+    }
+  };
   render() {
     return (
       <SafeAreaView style={CommonStyleSheets.container}>
@@ -21,6 +29,7 @@ class Login extends Component {
           <TextInput
             onChangeText={(text) => this.setState({phoneNumber: text})}
             value={this.state.phoneNumber}
+            placeholder="Please enter email"
             style={[
               styles.textBox,
               this.state.isPhoneNumber ? styles.errorMessage : null,
@@ -28,7 +37,7 @@ class Login extends Component {
           />
           <View style={styles.buttonContainer}>
             <Button
-              onButtonPress={() => console.log('here')}
+              onButtonPress={() => this.checkVerification()}
               buttonCaption="Login"
               buttonStyle={styles.button}
               buttonTextStyle={styles.buttonText}
