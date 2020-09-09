@@ -16,19 +16,27 @@ class OtpVerify extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isPhoneNumber: false,
-      phoneNumber: '',
+      pin1: '',
+      pin2: '',
+      pin3: '',
+      pin4: '',
       timer: 59,
+      isSubmit: false,
     };
   }
   checkVerification = () => {
-    if (this.state.phoneNumber === '') {
-      this.setState({isPhoneNumber: true});
+    if (
+      this.state.pin1 !== '' &&
+      this.state.pin2 !== '' &&
+      this.state.pin3 !== '' &&
+      this.state.pin4 !== ''
+    ) {
+      Actions.replace('password');
     } else {
-      Actions.replace('otp-verify');
+      this.setState({isSubmit: true});
     }
   };
-  focusOnNext = (id, prevId, txt) => {
+  focusOnNext = async (id, prevId, cid, txt) => {
     if (txt === '') {
       if (prevId !== '') {
         this.refs[prevId].focus();
@@ -38,6 +46,7 @@ class OtpVerify extends Component {
         this.refs[id].focus();
       }
     }
+    await this.setState({[cid]: txt});
   };
   resendOtp = async () => {
     await this.setState({timer: 59});
@@ -66,31 +75,55 @@ class OtpVerify extends Component {
           <View style={styles.textBoxContainer}>
             <TextInput
               ref="pin1"
-              onChangeText={(txt) => this.focusOnNext('pin2', '', txt)}
+              onChangeText={(txt) => this.focusOnNext('pin2', '', 'pin1', txt)}
               keyboardType="number-pad"
               maxLength={1}
-              style={[styles.textBox]}
+              style={[
+                styles.textBox,
+                this.state.pin1 === '' && this.state.isSubmit
+                  ? styles.errorMessage
+                  : null,
+              ]}
             />
             <TextInput
               ref="pin2"
-              onChangeText={(txt) => this.focusOnNext('pin3', 'pin1', txt)}
+              onChangeText={(txt) =>
+                this.focusOnNext('pin3', 'pin1', 'pin2', txt)
+              }
               keyboardType="number-pad"
               maxLength={1}
-              style={[styles.textBox]}
+              style={[
+                styles.textBox,
+                this.state.pin2 === '' && this.state.isSubmit
+                  ? styles.errorMessage
+                  : null,
+              ]}
             />
             <TextInput
               ref="pin3"
-              onChangeText={(txt) => this.focusOnNext('pin4', 'pin2', txt)}
+              onChangeText={(txt) =>
+                this.focusOnNext('pin4', 'pin2', 'pin3', txt)
+              }
               keyboardType="number-pad"
               maxLength={1}
-              style={[styles.textBox]}
+              style={[
+                styles.textBox,
+                this.state.pin3 === '' && this.state.isSubmit
+                  ? styles.errorMessage
+                  : null,
+              ]}
             />
             <TextInput
               ref="pin4"
-              onChangeText={(txt) => this.focusOnNext('', 'pin3', txt)}
+              onChangeText={(txt) => this.focusOnNext('', 'pin3', 'pin4', txt)}
               keyboardType="number-pad"
               maxLength={1}
-              style={[styles.textBox, styles.lastTextBox]}
+              style={[
+                styles.textBox,
+                this.state.pin4 === '' && this.state.isSubmit
+                  ? styles.errorMessage
+                  : null,
+              ]}
             />
           </View>
           <View style={styles.resendOtpContainer}>

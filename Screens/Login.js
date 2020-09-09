@@ -30,6 +30,7 @@ class Login extends Component {
             onChangeText={(text) => this.setState({phoneNumber: text})}
             value={this.state.phoneNumber}
             placeholder="Please enter email"
+            keyboardType="email-address"
             style={[
               styles.textBox,
               this.state.isPhoneNumber ? styles.errorMessage : null,
