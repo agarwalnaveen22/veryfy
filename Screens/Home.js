@@ -1,20 +1,26 @@
 import React, {Component} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../Components/Header';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
 
 class Home extends Component {
+  showUserList = (type) => {
+    Actions.push('user-list', {type: type});
+  };
   render() {
     return (
       <SafeAreaView style={CommonStyleSheets.container}>
         <Header title="Dashboard" />
         <View style={CommonStyleSheets.body}>
           <View style={[styles.boxContainer, styles.firstContainer]}>
-            <View style={styles.headerContainer}>
+            <TouchableOpacity
+              onPress={() => this.showUserList(1)}
+              style={styles.headerContainer}>
               <Text style={styles.headerText}>Total Applicants</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
                 <Text style={styles.numberText}>100</Text>
@@ -25,10 +31,11 @@ class Home extends Component {
             </View>
           </View>
           <View style={[styles.boxContainer, styles.middleContainer]}>
-            <View
+            <TouchableOpacity
+              onPress={() => this.showUserList(2)}
               style={[styles.headerContainer, styles.middleContainerHeader]}>
               <Text style={styles.headerText}>Verified Applicants</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
                 <Text style={[styles.numberText, styles.middleNumberText]}>
@@ -41,9 +48,11 @@ class Home extends Component {
             </View>
           </View>
           <View style={[styles.boxContainer, styles.lastContainer]}>
-            <View style={[styles.headerContainer, styles.lastContainerHeader]}>
+            <TouchableOpacity
+              onPress={() => this.showUserList(3)}
+              style={[styles.headerContainer, styles.lastContainerHeader]}>
               <Text style={styles.headerText}>Pending Applicants</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
                 <Text style={[styles.numberText, styles.lastNumberText]}>

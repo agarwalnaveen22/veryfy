@@ -1,10 +1,14 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StatusBar} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const Header = (props) => {
+  console.log(props.headerStyle);
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, props.headerStyle]}>
+      {props.headerStyle ? (
+        <StatusBar backgroundColor={props.headerStyle.backgroundColor} />
+      ) : null}
       <Text style={styles.headerText}>{props.title}</Text>
     </View>
   );

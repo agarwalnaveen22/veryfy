@@ -14,6 +14,7 @@ const AppRouter = () => {
         <Scene key="otp-verify" component={OtpVerify} />
         <Scene key="password" component={Password} />
         <Scene initial key="home" component={Home} />
+        <Scene key="user-list" component={UsersList} />
       </Stack>
     </Router>
   );
