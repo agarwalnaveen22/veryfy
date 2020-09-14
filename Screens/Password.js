@@ -18,7 +18,7 @@ class Password extends Component {
     if (this.state.password === '') {
       this.setState({isPassword: true});
     } else {
-      Actions.replace('tabs');
+      Actions.replace('home');
     }
   };
   render() {

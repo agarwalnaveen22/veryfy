@@ -33,6 +33,8 @@ EStyleSheet.build({
   $rem: width / 380,
   $primaryColor: '#2e62bc',
   $secondaryColor: '#ffffff',
+  $successColor: '#008000',
+  $warningColor: '#CCCC00',
   $errorColor: '#ff0000',
 });
 
