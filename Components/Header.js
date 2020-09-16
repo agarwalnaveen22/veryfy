@@ -3,7 +3,6 @@ import {View, Text, StatusBar} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const Header = (props) => {
-  console.log(props.headerStyle);
   return (
     <View style={[styles.header, props.headerStyle]}>
       {props.headerStyle ? (

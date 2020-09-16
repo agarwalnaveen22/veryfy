@@ -13,6 +13,9 @@ import CommonStyleSheets from '../Utilities/CommonStyleSheets';
 import Header from '../Components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ImagePicker from 'react-native-image-picker';
+import fs from 'react-native-fs';
+import {decode} from 'base64-arraybuffer';
+var AWS = require('aws-sdk');
 
 const DATA = [
   {
@@ -61,17 +64,24 @@ const DATA = [
   },
 ];
 class UsersList extends Component {
-  requestCameraPermission = async () => {
+  requestPermissions = async () => {
     return new Promise(async (resolve) => {
       if (Platform.OS === 'android') {
         try {
-          const granted = await PermissionsAndroid.request(
+          await PermissionsAndroid.requestMultiple([
             PermissionsAndroid.PERMISSIONS.CAMERA,
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          ]);
+          const permissionCamera = await PermissionsAndroid.check(
+            'android.permission.CAMERA',
           );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            resolve(true);
-          } else {
+          const permissionWriteStorage = await PermissionsAndroid.check(
+            'android.permission.WRITE_EXTERNAL_STORAGE',
+          );
+          if (!permissionCamera || !permissionWriteStorage) {
             resolve(false);
+          } else {
+            resolve(true);
           }
         } catch (err) {
           resolve(false);
@@ -82,19 +92,55 @@ class UsersList extends Component {
     });
   };
   openCamera = async () => {
-    let permit = await this.requestCameraPermission();
+    let permit = await this.requestPermissions();
     if (permit) {
       let options = {
         quality: 1,
         storageOptions: {
-          skipBackup: true,
-          path: 'images',
+          privateDirectory: true,
         },
       };
       ImagePicker.launchCamera(options, (response) => {
-        console.log('response', response);
+        if (response.didCancel) {
+          alert('User cancelled image picker');
+        } else if (response.error) {
+          alert('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          alert('User tapped custom button: ', response.customButton);
+        } else {
+          const file = {
+            uri: response.uri,
+            name: response.fileName,
+            type: 'image/jpeg',
+          };
+          this.uploadImageOnS3(file);
+        }
       });
     }
+  };
+  uploadImageOnS3 = async (file) => {
+    const s3bucket = new AWS.S3({
+      accessKeyId: 'AKIAIKLGEJGPZWOXAVCQ',
+      secretAccessKey: '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',
+      region: 'ap-south-1',
+    });
+    let contentType = 'image/jpeg';
+    let contentDeposition = 'inline;filename="' + file.name + '"';
+    const base64 = await fs.readFile(file.uri, 'base64');
+    const arrayBuffer = decode(base64);
+    const params = {
+      Bucket: 'veryfys/event',
+      Key: file.name,
+      Body: arrayBuffer,
+      ContentDisposition: contentDeposition,
+      ContentType: contentType,
+    };
+    s3bucket.upload(params, (err, data) => {
+      if (err) {
+        alert('Can not upload image '+ file.name);
+      }
+      console.log('Respomse URL : ' + data.Location);
+    });
   };
   renderItem = ({item}) => {
     return (
