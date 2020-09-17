@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^5.9.6",
+    "apisauce": "^1.1.2",
     "aws-sdk": "^2.753.0",
     "base64-arraybuffer": "^0.2.0",
     "react": "16.13.1",

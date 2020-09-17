@@ -4,7 +4,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
 import Header from '../Components/Header';
 import Button from '../Components/Button';
-import {Actions} from 'react-native-router-flux';
+import {doLogin} from '../Services/UserApi';
 
 class Login extends Component {
   constructor(props) {
@@ -12,13 +12,20 @@ class Login extends Component {
     this.state = {
       isPhoneNumber: false,
       phoneNumber: '',
+      isPassword: false,
+      password: '',
     };
   }
-  checkVerification = () => {
+  checkVerification = async () => {
     if (this.state.phoneNumber === '') {
       this.setState({isPhoneNumber: true});
+    } else if (this.state.password === '') {
+      this.setState({isPassword: true, isPhoneNumber: false});
     } else {
-      Actions.replace('otp-verify');
+      this.setState({isPassword: false});
+      let data = {email: '9887908259', password: 'Admin@123'};
+      let resp = await doLogin(data);
+      console.log(resp);
     }
   };
   render() {
@@ -34,6 +41,17 @@ class Login extends Component {
             style={[
               styles.textBox,
               this.state.isPhoneNumber ? styles.errorMessage : null,
+            ]}
+          />
+          <TextInput
+            onChangeText={(text) => this.setState({password: text})}
+            secureTextEntry={true}
+            value={this.state.password}
+            placeholder="Please enter password"
+            style={[
+              styles.textBox,
+              styles.passwordBox,
+              this.state.isPassword ? styles.errorMessage : null,
             ]}
           />
           <View style={styles.buttonContainer}>
@@ -59,6 +77,9 @@ const styles = EStyleSheet.create({
     fontSize: '20rem',
     borderRadius: '10rem',
     borderColor: '$primaryColor',
+  },
+  passwordBox: {
+    marginTop: '10rem',
   },
   buttonContainer: {
     marginTop: '50rem',
