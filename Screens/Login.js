@@ -1,19 +1,20 @@
 import React, {Component} from 'react';
-import {View, SafeAreaView, TextInput} from 'react-native';
+import {View, SafeAreaView, TextInput, Image} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
 import Header from '../Components/Header';
 import Button from '../Components/Button';
 import {doLogin} from '../Services/UserApi';
+import CommonMethods from '../Utilities/CommonMethods';
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isPhoneNumber: false,
-      phoneNumber: '',
+      phoneNumber: '9887908259',
       isPassword: false,
-      password: '',
+      password: 'Admin@123',
     };
   }
   checkVerification = async () => {
@@ -23,9 +24,10 @@ class Login extends Component {
       this.setState({isPassword: true, isPhoneNumber: false});
     } else {
       this.setState({isPassword: false});
-      let data = {email: '9887908259', password: 'Admin@123'};
+      let data = {email: this.state.phoneNumber, password: this.state.password};
       let resp = await doLogin(data);
-      console.log(resp);
+      await CommonMethods.setLocalStorage('token', resp.user.token);
+      CommonMethods.resetToPage('home');
     }
   };
   render() {
@@ -33,6 +35,7 @@ class Login extends Component {
       <SafeAreaView style={CommonStyleSheets.container}>
         <Header title="Login" />
         <View style={CommonStyleSheets.body}>
+          <Image style={styles.logo} source={require('../Assets/Images/logo.png')} />
           <TextInput
             onChangeText={(text) => this.setState({phoneNumber: text})}
             value={this.state.phoneNumber}
@@ -77,6 +80,11 @@ const styles = EStyleSheet.create({
     fontSize: '20rem',
     borderRadius: '10rem',
     borderColor: '$primaryColor',
+  },
+  logo: {
+    width: '100rem',
+    height: '100rem',
+    marginBottom: '70rem',
   },
   passwordBox: {
     marginTop: '10rem',

@@ -17,6 +17,7 @@ class _Api {
   }
 
   sendResponse = async (response, resolve) => {
+    console.log(response);
     if (response.ok) {
       resolve(response.data);
     } else if (response.status === 401) {
@@ -83,7 +84,7 @@ class _Api {
   setToken = async () => {
     let resp = await CommonMethods.getLocalStorage('token');
     if (resp && resp !== null) {
-      this.api.headers.authorization = resp;
+      this.api.headers.Authorization = 'Eschool ' + resp;
     }
   };
 }

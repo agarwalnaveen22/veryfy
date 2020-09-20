@@ -82,12 +82,24 @@ class commonMethods {
       }
     });
   };
-  logout = async (msg = '') => {
-    if (msg !== '') {
-      this.showErrorMessage(msg);
-    }
-    await this.clearLocalStorage();
-    this.resetToPage('auth');
+  searchApplicants = (jsonData, searchTxt) => {
+    let newJsonData = [];
+    jsonData.forEach((a) => {
+      let data = a.application_number.startsWith(searchTxt);
+      if (data) {
+        newJsonData.push(a);
+      }
+    });
+    return newJsonData;
+  };
+  removeItemFromJson = (jsonData, item) => {
+    let newJsonData = [];
+    jsonData.forEach((a) => {
+      if (a._id !== item._id) {
+        newJsonData.push(a);
+      }
+    });
+    return newJsonData;
   };
 }
 const CommonMethods = new commonMethods();

@@ -4,32 +4,82 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../Components/Header';
+import CommonMethods from '../Utilities/CommonMethods';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
+import {pendingApplicants, completedApplicants} from '../Services/UserApi';
 
 class Home extends Component {
-  showUserList = (type) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      verifiedApplicants: 0,
+      pendingApplicants: 0,
+    };
+  }
+  showUserList = async (type) => {
+    if (type === 2) {
+      let resp = await CommonMethods.getLocalStorage('totalVerifiedList');
+      if (resp) {
+        if (parseInt(resp) <= 0) {
+          return false;
+        }
+      }
+    } else {
+      let resp = await CommonMethods.getLocalStorage('totalPendingList');
+      if (resp) {
+        if (parseInt(resp) <= 0) {
+          return false;
+        }
+      }
+    }
     Actions.push('user-list', {type: type});
   };
+  logout = async () => {
+    await CommonMethods.clearLocalStorage();
+    CommonMethods.resetToPage('login');
+  };
+  getPendingApplicants = async () => {
+    let resp = await pendingApplicants({});
+    await CommonMethods.setLocalStorage(
+      'pendingList',
+      JSON.stringify(resp.data),
+    );
+    await CommonMethods.setLocalStorage(
+      'totalPendingList',
+      resp.data.length.toString(),
+    );
+    this.setState({pendingApplicants: resp.data.length});
+  };
+  getVerifiedApplicants = async () => {
+    let resp = await completedApplicants({});
+    await CommonMethods.setLocalStorage(
+      'verifiedList',
+      JSON.stringify(resp.data),
+    );
+    await CommonMethods.setLocalStorage(
+      'totalVerifiedList',
+      resp.data.length.toString(),
+    );
+    this.setState({verifiedApplicants: resp.data.length});
+  };
+  setApplicants = async () => {
+    let resp = await CommonMethods.getLocalStorage('totalVerifiedList');
+    if (resp) {
+      this.setState({verifiedApplicants: resp});
+    }
+    let resp1 = await CommonMethods.getLocalStorage('totalPendingList');
+    if (resp1) {
+      this.setState({pendingApplicants: resp1});
+    }
+  };
+  componentDidMount() {
+    this.setApplicants();
+  }
   render() {
     return (
       <SafeAreaView style={CommonStyleSheets.container}>
-        <Header title="Dashboard" />
+        <Header title="Dashboard" isShowLogout={true} logout={this.logout} />
         <View style={CommonStyleSheets.body}>
-          <View style={[styles.boxContainer, styles.firstContainer]}>
-            <TouchableOpacity
-              onPress={() => this.showUserList(1)}
-              style={styles.headerContainer}>
-              <Text style={styles.headerText}>Total Applicants</Text>
-            </TouchableOpacity>
-            <View style={styles.bodyContainer}>
-              <View style={styles.numberContainer}>
-                <Text style={styles.numberText}>100</Text>
-              </View>
-              <View style={styles.refreshContainer}>
-                <Icon name="sync" size={styles.refreshBtn.fontSize} />
-              </View>
-            </View>
-          </View>
           <View style={[styles.boxContainer, styles.middleContainer]}>
             <TouchableOpacity
               onPress={() => this.showUserList(2)}
@@ -39,12 +89,14 @@ class Home extends Component {
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
                 <Text style={[styles.numberText, styles.middleNumberText]}>
-                  80
+                  {this.state.verifiedApplicants}
                 </Text>
               </View>
-              <View style={styles.refreshContainer}>
+              <TouchableOpacity
+                onPress={() => this.getVerifiedApplicants()}
+                style={styles.refreshContainer}>
                 <Icon name="sync" size={styles.refreshBtn.fontSize} />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={[styles.boxContainer, styles.lastContainer]}>
@@ -56,12 +108,14 @@ class Home extends Component {
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
                 <Text style={[styles.numberText, styles.lastNumberText]}>
-                  20
+                  {this.state.pendingApplicants}
                 </Text>
               </View>
-              <View style={styles.refreshContainer}>
+              <TouchableOpacity
+                onPress={() => this.getPendingApplicants()}
+                style={styles.refreshContainer}>
                 <Icon name="sync" size={styles.refreshBtn.fontSize} />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -73,7 +127,7 @@ class Home extends Component {
 const styles = EStyleSheet.create({
   boxContainer: {
     width: '70%',
-    height: '25%',
+    height: '140rem',
     marginTop: '10rem',
     marginBottom: '10rem',
     borderWidth: '1rem',
@@ -110,11 +164,11 @@ const styles = EStyleSheet.create({
   },
   bodyContainer: {
     width: '100%',
-    height: '100%',
+    height: '90rem',
   },
   numberContainer: {
     width: '100%',
-    height: '70rem',
+    height: '60rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
