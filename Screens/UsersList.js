@@ -181,6 +181,10 @@ class UsersList extends Component {
             'pendingList',
             JSON.stringify(newJsonData),
           );
+          await CommonMethods.setLocalStorage(
+            'totalPendingList',
+            newJsonData.length.toString(),
+          );
           cthis.setState({data: newJsonData, totalData: newJsonData});
         }
       }
