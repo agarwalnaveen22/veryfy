@@ -45,6 +45,12 @@ class UsersList extends Component {
       this.setState({data: JSON.parse(resp), totalData: JSON.parse(resp)});
     }
   };
+  showUnverifiedApplicants = async () => {
+    let resp = await CommonMethods.getLocalStorage('unVerifiedList');
+    if (resp) {
+      this.setState({data: JSON.parse(resp), totalData: JSON.parse(resp)});
+    }
+  };
   searchApplicants = async (txt) => {
     await this.setState({searchText: txt});
     this.setState({
@@ -52,8 +58,10 @@ class UsersList extends Component {
     });
   };
   componentDidMount() {
-    if (this.props.type !== 2) {
+    if (this.props.type === 3) {
       this.showPendingApplicants();
+    } else if (this.props.type === 1) {
+      this.showUnverifiedApplicants();
     } else {
       this.showVerifiedApplicants();
     }
@@ -140,10 +148,10 @@ class UsersList extends Component {
         await cthis.setState({showLoading: false});
         alert('Can not upload image ' + file.name);
       }
-      this.faceRecognition(item);
+      this.faceRecognition(item, data);
     });
   };
-  faceRecognition = (item) => {
+  faceRecognition = (item, uploadedData) => {
     var params = {
       SimilarityThreshold: 90,
       SourceImage: {
@@ -169,6 +177,7 @@ class UsersList extends Component {
         let request = {
           id: item._id,
           match_json: data,
+          mobile_photo_url: uploadedData.Location,
         };
         let resp = await saveComparisionDetails(request);
         await cthis.setState({showLoading: false});
@@ -185,7 +194,10 @@ class UsersList extends Component {
             'totalPendingList',
             newJsonData.length.toString(),
           );
-          cthis.setState({data: newJsonData, totalData: newJsonData});
+          await cthis.setState({data: newJsonData, totalData: newJsonData});
+          if(resp.status === 2){
+            CommonMethods.showErrorMessage('Does not matched!');
+          }
         }
       }
     });
@@ -194,7 +206,9 @@ class UsersList extends Component {
     return (
       <TouchableOpacity
         onPress={() =>
-          this.state.showLoading || this.props.type === 2
+          this.state.showLoading ||
+          this.props.type === 1 ||
+          this.props.type === 2
             ? null
             : this.openCamera(item)
         }
@@ -219,11 +233,7 @@ class UsersList extends Component {
           {this.state.showLoading && this.state.currentItemId === item._id ? (
             <ActivityIndicator
               size="large"
-              color={
-                this.props.type === 2
-                  ? styles.verifiedApplicantsHeader.backgroundColor
-                  : styles.pendingApplicantsHeader.backgroundColor
-              }
+              color={styles.pendingApplicantsHeader.backgroundColor}
             />
           ) : null}
         </View>
@@ -236,7 +246,7 @@ class UsersList extends Component {
         <Header
           title={
             this.props.type === 1
-              ? 'All Applicants'
+              ? 'Unverified Applicants'
               : this.props.type === 2
               ? 'Verified Applicants'
               : 'Pending Applicants'

@@ -6,7 +6,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../Components/Header';
 import CommonMethods from '../Utilities/CommonMethods';
 import CommonStyleSheets from '../Utilities/CommonStyleSheets';
-import {pendingApplicants, completedApplicants} from '../Services/UserApi';
+import {
+  pendingApplicants,
+  completedApplicants,
+  unVerifiedApplicants,
+} from '../Services/UserApi';
 
 class Home extends Component {
   constructor(props) {
@@ -14,10 +18,18 @@ class Home extends Component {
     this.state = {
       verifiedApplicants: 0,
       pendingApplicants: 0,
+      unVerifiedApplicants: 0,
     };
   }
   showUserList = async (type) => {
-    if (type === 2) {
+    if (type === 1) {
+      let resp = await CommonMethods.getLocalStorage('totalUnverifiedList');
+      if (resp) {
+        if (parseInt(resp) <= 0) {
+          return false;
+        }
+      }
+    } else if (type === 2) {
       let resp = await CommonMethods.getLocalStorage('totalVerifiedList');
       if (resp) {
         if (parseInt(resp) <= 0) {
@@ -62,6 +74,18 @@ class Home extends Component {
     );
     this.setState({verifiedApplicants: resp.data.length});
   };
+  getUnverifiedApplicants = async () => {
+    let resp = await unVerifiedApplicants({});
+    await CommonMethods.setLocalStorage(
+      'unVerifiedList',
+      JSON.stringify(resp.data),
+    );
+    await CommonMethods.setLocalStorage(
+      'totalUnverifiedList',
+      resp.data.length.toString(),
+    );
+    this.setState({unVerifiedApplicants: resp.data.length});
+  };
   setApplicants = async () => {
     let resp = await CommonMethods.getLocalStorage('totalVerifiedList');
     if (resp) {
@@ -70,6 +94,10 @@ class Home extends Component {
     let resp1 = await CommonMethods.getLocalStorage('totalPendingList');
     if (resp1) {
       this.setState({pendingApplicants: resp1});
+    }
+    let resp2 = await CommonMethods.getLocalStorage('totalUnverifiedList');
+    if (resp2) {
+      this.setState({unVerifiedApplicants: resp2});
     }
   };
   componentDidMount() {
@@ -80,6 +108,25 @@ class Home extends Component {
       <SafeAreaView style={CommonStyleSheets.container}>
         <Header title="Dashboard" isShowLogout={true} logout={this.logout} />
         <View style={CommonStyleSheets.body}>
+          <View style={[styles.boxContainer, styles.lastContainer]}>
+            <TouchableOpacity
+              onPress={() => this.showUserList(3)}
+              style={[styles.headerContainer, styles.lastContainerHeader]}>
+              <Text style={styles.headerText}>Pending Applicants</Text>
+            </TouchableOpacity>
+            <View style={styles.bodyContainer}>
+              <View style={styles.numberContainer}>
+                <Text style={[styles.numberText, styles.lastNumberText]}>
+                  {this.state.pendingApplicants}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => this.getPendingApplicants()}
+                style={styles.refreshContainer}>
+                <Icon name="sync" size={styles.refreshBtn.fontSize} />
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={[styles.boxContainer, styles.middleContainer]}>
             <TouchableOpacity
               onPress={() => this.showUserList(2)}
@@ -99,20 +146,20 @@ class Home extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[styles.boxContainer, styles.lastContainer]}>
+          <View style={[styles.boxContainer, styles.firstContainer]}>
             <TouchableOpacity
-              onPress={() => this.showUserList(3)}
-              style={[styles.headerContainer, styles.lastContainerHeader]}>
-              <Text style={styles.headerText}>Pending Applicants</Text>
+              onPress={() => this.showUserList(1)}
+              style={[styles.headerContainer, styles.firstContainerHeader]}>
+              <Text style={styles.headerText}>Unverified Applicants</Text>
             </TouchableOpacity>
             <View style={styles.bodyContainer}>
               <View style={styles.numberContainer}>
-                <Text style={[styles.numberText, styles.lastNumberText]}>
-                  {this.state.pendingApplicants}
+                <Text style={[styles.numberText]}>
+                  {this.state.unVerifiedApplicants}
                 </Text>
               </View>
               <TouchableOpacity
-                onPress={() => this.getPendingApplicants()}
+                onPress={() => this.getUnverifiedApplicants()}
                 style={styles.refreshContainer}>
                 <Icon name="sync" size={styles.refreshBtn.fontSize} />
               </TouchableOpacity>
