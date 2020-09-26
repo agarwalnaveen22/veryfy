@@ -1,6 +1,7 @@
 import {Actions} from 'react-native-router-flux';
 import NetInfo from '@react-native-community/netinfo';
-import {Alert, AsyncStorage} from 'react-native';
+import {Alert} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class commonMethods {
   navigateToPage = (pageName) => {

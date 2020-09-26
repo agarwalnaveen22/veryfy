@@ -12,9 +12,9 @@ class Login extends Component {
     super(props);
     this.state = {
       isPhoneNumber: false,
-      phoneNumber: '9887908259',
+      phoneNumber: '',
       isPassword: false,
-      password: 'Admin@123',
+      password: '',
     };
   }
   checkVerification = async () => {

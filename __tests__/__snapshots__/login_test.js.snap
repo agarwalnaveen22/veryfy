@@ -1,0 +1,193 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<RCTSafeAreaView
+  emulateUnlessSupported={true}
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "#2e62bc",
+          "flexDirection": "row",
+          "height": 98.68421052631578,
+          "justifyContent": "center",
+          "width": "100%",
+        },
+        undefined,
+      ]
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "height": 98.68421052631578,
+          "justifyContent": "center",
+          "width": "15%",
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "height": 98.68421052631578,
+          "justifyContent": "center",
+          "width": "70%",
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "#ffffff",
+            "fontSize": 49.34210526315789,
+          }
+        }
+      >
+        Login
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "height": 98.68421052631578,
+          "justifyContent": "center",
+          "width": "15%",
+        }
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "height": "100%",
+        "justifyContent": "center",
+        "width": "100%",
+      }
+    }
+  >
+    <Image
+      source={
+        Object {
+          "testUri": "../../../Assets/Images/logo.png",
+        }
+      }
+      style={
+        Object {
+          "height": 197.36842105263156,
+          "marginBottom": 138.1578947368421,
+          "width": 197.36842105263156,
+        }
+      }
+    />
+    <TextInput
+      allowFontScaling={true}
+      keyboardType="email-address"
+      onChangeText={[Function]}
+      placeholder="Please enter email"
+      rejectResponderTermination={true}
+      style={
+        Array [
+          Object {
+            "borderColor": "#2e62bc",
+            "borderRadius": 19.736842105263158,
+            "borderWidth": 1.9736842105263157,
+            "fontSize": 39.473684210526315,
+            "height": 98.68421052631578,
+            "paddingStart": 19.736842105263158,
+            "width": "80%",
+          },
+          null,
+        ]
+      }
+      underlineColorAndroid="transparent"
+      value=""
+    />
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      placeholder="Please enter password"
+      rejectResponderTermination={true}
+      secureTextEntry={true}
+      style={
+        Array [
+          Object {
+            "borderColor": "#2e62bc",
+            "borderRadius": 19.736842105263158,
+            "borderWidth": 1.9736842105263157,
+            "fontSize": 39.473684210526315,
+            "height": 98.68421052631578,
+            "paddingStart": 19.736842105263158,
+            "width": "80%",
+          },
+          Object {
+            "marginTop": 19.736842105263158,
+          },
+          null,
+        ]
+      }
+      underlineColorAndroid="transparent"
+      value=""
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "justifyContent": "center",
+          "marginTop": 98.68421052631578,
+          "width": "100%",
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#2e62bc",
+            "borderRadius": 19.736842105263158,
+            "height": 98.68421052631578,
+            "justifyContent": "center",
+            "opacity": 1,
+            "width": "50%",
+          }
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "fontSize": 39.473684210526315,
+              },
+              Object {
+                "color": "#ffffff",
+              },
+            ]
+          }
+        >
+          Login
+        </Text>
+      </View>
+    </View>
+  </View>
+</RCTSafeAreaView>
+`;
