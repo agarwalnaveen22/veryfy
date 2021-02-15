@@ -186,14 +186,25 @@ class UsersList extends Component {
             cthis.state.totalData,
             item,
           );
-          await CommonMethods.setLocalStorage(
-            'pendingList',
-            JSON.stringify(newJsonData),
-          );
-          await CommonMethods.setLocalStorage(
-            'totalPendingList',
-            newJsonData.length.toString(),
-          );
+          if(cthis.props.type === 1) {
+            await CommonMethods.setLocalStorage(
+              'unVerifiedList',
+              JSON.stringify(newJsonData),
+            );
+            await CommonMethods.setLocalStorage(
+              'totalUnverifiedList',
+              newJsonData.length.toString(),
+            );
+          } else {
+            await CommonMethods.setLocalStorage(
+              'pendingList',
+              JSON.stringify(newJsonData),
+            );
+            await CommonMethods.setLocalStorage(
+              'totalPendingList',
+              newJsonData.length.toString(),
+            );
+          }
           await cthis.setState({data: newJsonData, totalData: newJsonData});
           if(resp.status === 2){
             CommonMethods.showErrorMessage('Does not matched!');
@@ -207,7 +218,6 @@ class UsersList extends Component {
       <TouchableOpacity
         onPress={() =>
           this.state.showLoading ||
-          this.props.type === 1 ||
           this.props.type === 2
             ? null
             : this.openCamera(item)
